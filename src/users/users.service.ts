@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -11,13 +12,22 @@ export class UsersService {
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
   ) {}
+  private readonly saltRounds = 12;
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const user = this._userRepository.create(createUserDto);
-      const savedUser = await this._userRepository.save(user);
+      const { password, ...userData } = createUserDto;
 
-      return savedUser;
+      const user = this._userRepository.create({
+        ...userData,
+        password: bcrypt.hashSync(password, this.saltRounds),
+      });
+
+      await this._userRepository.save(user);
+
+      return {
+        user: userData,
+      };
     } catch (error) {
       console.error('Error in UsersService = ', error);
       throw new InternalServerErrorException();

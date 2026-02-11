@@ -1,10 +1,14 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -12,22 +16,18 @@ export class UsersService {
     @InjectRepository(User)
     private readonly _userRepository: Repository<User>,
   ) {}
-  private readonly saltRounds = 12;
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { password, ...userData } = createUserDto;
-
-      const user = this._userRepository.create({
-        ...userData,
-        password: bcrypt.hashSync(password, this.saltRounds),
-      });
+      const user = this._userRepository.create(createUserDto);
 
       await this._userRepository.save(user);
 
-      return {
-        user: userData,
-      };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...userCreated } =
+        await this._userRepository.save(user);
+
+      return userCreated;
     } catch (error) {
       console.error('Error in UsersService = ', error);
       throw new InternalServerErrorException();
@@ -38,21 +38,43 @@ export class UsersService {
     return await this._userRepository.find();
   }
 
-  findOne(id: number) {
-    console.log(id, typeof id);
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    if (isNaN(id))
+      throw new BadRequestException(`Id not valid. Id must be a number.`);
+
+    const userFound = await this._userRepository.findOneBy({ id });
+
+    if (!userFound) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userFoundData } = userFound;
+
+    return userFoundData;
   }
 
   async findOneByEmail(email: string) {
     return await this._userRepository.findOneBy({ email });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto);
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const userFound = await this.findOne(id);
+
+    await this._userRepository.update({ id: userFound.id }, updateUserDto);
+
+    const userUpdated = await this.findOne(id);
+
+    return {
+      message: `User with id ${id} updated succesfully`,
+      data: userUpdated,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const userFound = await this.findOne(id);
+    await this._userRepository.delete(userFound.id);
+
+    return { message: 'User deleted successfully' };
   }
 }

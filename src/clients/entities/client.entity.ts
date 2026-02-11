@@ -2,15 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserRole } from '../enums/user-role.enum';
-import { Client } from 'src/clients/entities/client.entity';
+import { ClientStatus } from '../enums/client-status.enum';
+import { User } from 'src/users/entities/user.entity';
 
-@Entity('users')
-export class User {
+@Entity('clients')
+export class Client {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,13 +21,16 @@ export class User {
   email: string;
 
   @Column()
-  password: string;
+  phone: string;
+
+  @Column()
+  company: string;
 
   @Column({
     type: 'enum',
-    enum: UserRole,
+    enum: ClientStatus,
   })
-  role: UserRole;
+  status: ClientStatus;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -35,6 +38,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Client, (client) => client.ownerId)
-  clients: Client[];
+  @ManyToOne(() => User, (user) => user.clients)
+  ownerId: User;
 }

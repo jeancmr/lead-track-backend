@@ -1,16 +1,14 @@
 import { Transform } from 'class-transformer';
-import { UserRole } from '../enums/user-role.enum';
 import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
   IsString,
   MinLength,
-  IsEmail,
-  IsNotEmpty,
-  IsEnum,
-  IsOptional,
-  IsDate,
 } from 'class-validator';
+import { UserRole } from 'src/users/enums/user-role.enum';
 
-export class CreateUserDto {
+export class RegisterDto {
   @Transform(({ value }: { value: string }) => value.trim())
   @IsString()
   @MinLength(2)
@@ -29,12 +27,4 @@ export class CreateUserDto {
   @IsEnum(UserRole)
   @IsNotEmpty()
   role?: UserRole;
-
-  @IsDate()
-  @IsOptional()
-  createdAt?: Date;
-
-  @IsDate()
-  @IsOptional()
-  updatedAt?: Date;
 }

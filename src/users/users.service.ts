@@ -34,12 +34,17 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this._userRepository.find();
   }
 
   findOne(id: number) {
+    console.log(id, typeof id);
     return `This action returns a #${id} user`;
+  }
+
+  async findOneByEmail(email: string) {
+    return await this._userRepository.findOneBy({ email });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

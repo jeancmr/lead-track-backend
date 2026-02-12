@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsDate,
   IsPhoneNumber,
+  IsInt,
 } from 'class-validator';
 import { ClientStatus } from '../enums/client-status.enum';
 
@@ -44,4 +45,8 @@ export class CreateClientDto {
   @IsDate()
   @IsOptional()
   updatedAt?: Date;
+
+  @IsInt()
+  @IsNotEmpty()
+  ownerId: number;
 }

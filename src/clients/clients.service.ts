@@ -3,31 +3,53 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from './entities/client.entity';
-import { Repository } from 'typeorm';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
     private readonly _clientRepository: Repository<Client>,
+    private readonly usersService: UsersService,
   ) {}
 
   async create(createClientDto: CreateClientDto) {
+    const ownerFound = await this.usersService.findOne(createClientDto.ownerId);
+
     const clientFound = await this.findOneByEmail(createClientDto.email);
 
     if (clientFound) throw new BadRequestException('Client already exists');
 
-    const newClient = await this._clientRepository.save(createClientDto);
+    const newClient = this._clientRepository.create({
+      ...createClientDto,
+      owner: ownerFound,
+    });
+
+    await this._clientRepository.save(newClient);
 
     return { message: 'Client registered succesfully', data: newClient };
   }
 
   async findAll() {
-    return await this._clientRepository.find();
+    return this._clientRepository.find();
+  }
+
+  async findAllByOwner(ownerId: number) {
+    if (isNaN(ownerId))
+      throw new BadRequestException(`Id not valid. Id must be a number.`);
+
+    return this._clientRepository.find({
+      where: {
+        owner: {
+          id: ownerId,
+        },
+      },
+    });
   }
 
   async findOne(id: number) {

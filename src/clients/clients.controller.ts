@@ -30,6 +30,11 @@ export class ClientsController {
     return this.clientsService.findOne(+id);
   }
 
+  @Get('owner/:ownerId')
+  findAllByOwner(@Param('ownerId') ownerId: number) {
+    return this.clientsService.findAllByOwner(ownerId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientsService.update(+id, updateClientDto);

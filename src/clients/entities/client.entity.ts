@@ -39,5 +39,5 @@ export class Client {
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.clients)
-  ownerId: User;
+  owner: User;
 }

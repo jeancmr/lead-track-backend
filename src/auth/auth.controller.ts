@@ -4,8 +4,10 @@ import {
   Get,
   Post,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -17,13 +19,21 @@ export class AuthController {
   constructor(private readonly authservice: AuthService) {}
 
   @Post('register')
-  register(@Body() registerDto: RegisterDto) {
-    return this.authservice.register(registerDto);
+  register(
+    @Body() registerDto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authservice.register(registerDto, res);
   }
 
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authservice.login(loginDto);
+  login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
+    return this.authservice.login(loginDto, res);
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    return this.authservice.logout(res);
   }
 
   @UseGuards(JwtAuthGuard)

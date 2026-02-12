@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
@@ -19,7 +20,7 @@ export class AuthService {
   ) {}
   private readonly saltRounds = 12;
 
-  async register(registerDto: RegisterDto) {
+  async register(registerDto: RegisterDto, res: Response) {
     const { password, ...userData } = registerDto;
 
     const userFound = await this.usersService.findOneByEmail(registerDto.email);
@@ -31,16 +32,18 @@ export class AuthService {
       password: await bcrypt.hash(password, this.saltRounds),
     });
 
-    const token = this.getJwtToken({
+    const token = await this.getJwtToken({
       id: userSignedUp.id,
       email: userSignedUp.email,
       role: userSignedUp.role,
     });
 
+    this.storeCookie(token, res);
+
     return { message: 'User signed up sucessfully', data: userData, token };
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto, res: Response) {
     const { email, password } = loginDto;
     const userFound = await this.usersService.findOneByEmail(email);
 
@@ -64,11 +67,34 @@ export class AuthService {
       role: userData.role,
     });
 
+    this.storeCookie(token, res);
+
     return { message: 'User logged sucessfully', data: userData, token };
+  }
+
+  logout(res: Response) {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: true, // en prod
+      sameSite: 'lax',
+    });
+
+    return { message: 'Logged out successfully' };
   }
 
   async getJwtToken(payload: JwtPayload) {
     const token = await this.jwtService.signAsync(payload);
     return token;
+  }
+
+  private storeCookie(token: string, res: Response) {
+    const isProd = process.env.NODE_ENV === 'production';
+
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      maxAge: 15 * 60 * 1000,
+    });
   }
 }

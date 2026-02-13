@@ -70,18 +70,29 @@ export class ClientsService {
   }
 
   async update(id: number, updateClientDto: UpdateClientDto) {
+    const { ownerId, ...updateClientData } = updateClientDto;
+
     const clientFound = await this.findOne(id);
+
+    let newOwner = {};
+
+    if (ownerId) {
+      newOwner = await this.usersService.findOne(ownerId);
+    }
 
     await this._clientRepository.update(
       { id: clientFound.id },
-      updateClientDto,
+      {
+        ...updateClientData,
+        owner: ownerId ? newOwner : clientFound.owner,
+      },
     );
 
-    const userUpdated = await this.findOne(id);
+    const clientUpdated = await this.findOne(id);
 
     return {
       message: `Client with id ${id} updated succesfully`,
-      data: userUpdated,
+      data: clientUpdated,
     };
   }
 

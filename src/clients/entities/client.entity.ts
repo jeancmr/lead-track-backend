@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ClientStatus } from '../enums/client-status.enum';
 import { User } from 'src/users/entities/user.entity';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Entity('clients')
 export class Client {
@@ -40,4 +42,7 @@ export class Client {
 
   @ManyToOne(() => User, (user) => user.clients)
   owner: User;
+
+  @OneToMany(() => Note, (note) => note.clientId)
+  notes: Note[];
 }

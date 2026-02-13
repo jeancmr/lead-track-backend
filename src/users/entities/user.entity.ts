@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserRole } from '../enums/user-role.enum';
 import { Client } from 'src/clients/entities/client.entity';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Entity('users')
 export class User {
@@ -37,4 +38,7 @@ export class User {
 
   @OneToMany(() => Client, (client) => client.owner)
   clients: Client[];
+
+  @OneToMany(() => Note, (note) => note.createdBy)
+  notes: Note[];
 }

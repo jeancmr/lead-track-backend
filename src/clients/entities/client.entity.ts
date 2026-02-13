@@ -43,6 +43,6 @@ export class Client {
   @ManyToOne(() => User, (user) => user.clients)
   owner: User;
 
-  @OneToMany(() => Note, (note) => note.clientId)
+  @OneToMany(() => Note, (note) => note.client)
   notes: Note[];
 }

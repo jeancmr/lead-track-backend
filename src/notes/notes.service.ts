@@ -17,13 +17,23 @@ export class NotesService {
   ) {}
 
   async create(createNoteDto: CreateNoteDto) {
-    await this.usersService.findOne(createNoteDto.user);
-    await this.clientsService.findOne(createNoteDto.client);
+    const userFound = await this.usersService.findOne(createNoteDto.userId);
+    const clientFound = await this.clientsService.findOne(
+      createNoteDto.clientId,
+    );
 
-    const newNote = this._noteRepository.create(createNoteDto);
+    const newNote = this._noteRepository.create({
+      ...createNoteDto,
+      createdBy: userFound,
+      client: clientFound,
+    });
 
     await this._noteRepository.save(newNote);
-    return { message: 'Note saved succesfully', data: newNote };
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { createdBy, client, ...savedNote } = newNote;
+
+    return { message: 'Note saved succesfully', data: savedNote };
   }
 
   findAll() {

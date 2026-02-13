@@ -25,9 +25,9 @@ export class CreateNoteDto {
 
   @IsInt()
   @IsNotEmpty()
-  user: number;
+  userId: number;
 
   @IsInt()
   @IsNotEmpty()
-  client: number;
+  clientId: number;
 }

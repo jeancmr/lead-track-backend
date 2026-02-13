@@ -27,5 +27,5 @@ export class Note {
   createdBy: User;
 
   @ManyToOne(() => Client, (client) => client.notes)
-  clientId: Client;
+  client: Client;
 }

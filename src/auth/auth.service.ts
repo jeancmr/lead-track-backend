@@ -73,9 +73,11 @@ export class AuthService {
   }
 
   logout(res: Response) {
+    const isProd = process.env.NODE_ENV === 'production';
+
     res.clearCookie('access_token', {
       httpOnly: true,
-      secure: true, // en prod
+      secure: isProd,
       sameSite: 'lax',
     });
 

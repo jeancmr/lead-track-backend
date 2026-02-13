@@ -51,9 +51,29 @@ export class NotesService {
   }
 
   async update(id: string, updateNoteDto: UpdateNoteDto) {
-    await this.findOne(id);
+    const { userId, clientId, ...updatenoteData } = updateNoteDto;
 
-    await this._noteRepository.update({ id }, updateNoteDto);
+    const noteFound = await this.findOne(id);
+
+    let newUser = {};
+    let newClient = {};
+
+    if (userId) {
+      newUser = await this.usersService.findOne(userId);
+    }
+
+    if (clientId) {
+      newClient = await this.clientsService.findOne(clientId);
+    }
+
+    await this._noteRepository.update(
+      { id: noteFound.id },
+      {
+        ...updatenoteData,
+        createdBy: userId ? newUser : noteFound.createdBy,
+        client: clientId ? newClient : noteFound.client,
+      },
+    );
 
     const noteUpdated = await this.findOne(id);
 

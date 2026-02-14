@@ -7,9 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const apiVersionPath = 'api/v1';
-
-  app.setGlobalPrefix(apiVersionPath);
+  app.setGlobalPrefix('api/v1');
   app.use(cookieParser());
 
   app.useGlobalPipes(
@@ -28,7 +26,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup(apiVersionPath, app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -25,7 +26,7 @@ export class AuthService {
 
     const userFound = await this.usersService.findOneByEmail(registerDto.email);
 
-    if (userFound) throw new BadRequestException('User already exists');
+    if (userFound) throw new ConflictException('User already exists');
 
     const userSignedUp = await this.usersService.create({
       ...registerDto,

@@ -10,6 +10,7 @@ import {
 import { ClientStatus } from '../enums/client-status.enum';
 import { User } from 'src/users/entities/user.entity';
 import { Note } from 'src/notes/entities/note.entity';
+import { Task } from 'src/tasks/entities/task.entity';
 
 @Entity('clients')
 export class Client {
@@ -45,4 +46,7 @@ export class Client {
 
   @OneToMany(() => Note, (note) => note.client)
   notes: Note[];
+
+  @OneToMany(() => Task, (task) => task.client)
+  tasks: Task[];
 }

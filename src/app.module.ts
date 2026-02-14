@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ClientsModule } from './clients/clients.module';
 import { NotesModule } from './notes/notes.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { NotesModule } from './notes/notes.module';
     AuthModule,
     ClientsModule,
     NotesModule,
+    TasksModule,
   ],
 })
 export class AppModule implements OnModuleInit {

@@ -9,6 +9,7 @@ import {
 import { UserRole } from '../enums/user-role.enum';
 import { Client } from 'src/clients/entities/client.entity';
 import { Note } from 'src/notes/entities/note.entity';
+import { Task } from 'src/tasks/entities/task.entity';
 
 @Entity('users')
 export class User {
@@ -41,4 +42,7 @@ export class User {
 
   @OneToMany(() => Note, (note) => note.createdBy)
   notes: Note[];
+
+  @OneToMany(() => Task, (task) => task.assignedTo)
+  tasks: Task[];
 }

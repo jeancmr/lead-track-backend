@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth-guard';
+import { PaginationDto } from 'src/common/guards/pagination.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('clients')
@@ -24,8 +26,8 @@ export class ClientsController {
   }
 
   @Get()
-  findAll() {
-    return this.clientsService.findAll();
+  async findAll(@Query() query: PaginationDto) {
+    return this.clientsService.findAll(query);
   }
 
   @Get(':id')

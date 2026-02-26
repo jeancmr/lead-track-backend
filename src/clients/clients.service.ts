@@ -10,6 +10,7 @@ import { UpdateClientDto } from './dto/update-client.dto';
 import { Client } from './entities/client.entity';
 import { UsersService } from 'src/users/users.service';
 import { PaginationDto } from 'src/common/guards/pagination.dto';
+import { ClientStatus } from './enums/client-status.enum';
 
 @Injectable()
 export class ClientsService {
@@ -45,7 +46,9 @@ export class ClientsService {
 
     const baseFilters: FindOptionsWhere<Client> = {};
 
-    if (status) baseFilters.status = status;
+    if (status && status !== ClientStatus.ALL) {
+      baseFilters.status = status;
+    }
 
     if (search) {
       where.push(

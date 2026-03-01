@@ -35,6 +35,7 @@ export class AuthService {
     const token = await this.getJwtToken({
       id: userSignedUp.id,
       email: userSignedUp.email,
+      name: userSignedUp.name,
       role: userSignedUp.role,
     });
 
@@ -63,6 +64,7 @@ export class AuthService {
 
     const token = await this.getJwtToken({
       id: userData.id,
+      name: userData.name,
       email,
       role: userData.role,
     });

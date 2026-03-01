@@ -34,7 +34,13 @@ export class ClientsService {
 
     await this._clientRepository.save(newClient);
 
-    return { message: 'Client registered succesfully', data: newClient };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { owner, ...clientCreated } = newClient;
+
+    return {
+      message: 'Client registered succesfully',
+      data: clientCreated,
+    };
   }
 
   async findAll(paginationDto: PaginationDto) {

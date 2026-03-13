@@ -43,7 +43,7 @@ export class ClientsService {
     };
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto, ownerId?: number) {
     const { limit = 10, page = 1, status, search } = paginationDto;
 
     const skip = (page - 1) * limit;
@@ -51,6 +51,10 @@ export class ClientsService {
     const where: FindOptionsWhere<Client>[] = [];
 
     const baseFilters: FindOptionsWhere<Client> = {};
+
+    if (ownerId) {
+      baseFilters.owner = { id: ownerId };
+    }
 
     if (status && status !== ClientStatus.ALL) {
       baseFilters.status = status;

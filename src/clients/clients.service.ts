@@ -107,7 +107,10 @@ export class ClientsService {
     if (isNaN(id))
       throw new BadRequestException(`Id not valid. Id must be a number.`);
 
-    const clientFound = await this._clientRepository.findOneBy({ id });
+    const clientFound = await this._clientRepository.findOne({
+      where: { id },
+      relations: { notes: true, tasks: true },
+    });
 
     if (!clientFound) {
       throw new NotFoundException(`Client with id ${id} not found`);

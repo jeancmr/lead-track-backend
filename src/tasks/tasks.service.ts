@@ -35,8 +35,24 @@ export class TasksService {
     return { message: 'Note saved succesfully', data: taskSaved };
   }
 
-  findAll() {
-    return this._taskRepository.find();
+  async findAll() {
+    return await this._taskRepository
+      .createQueryBuilder('task')
+      .leftJoin('task.assignedTo', 'assignedTo')
+      .leftJoin('task.client', 'client')
+      .select([
+        'task.id',
+        'task.title',
+        'task.dueDate',
+        'task.status',
+        'task.createdAt',
+        'task.updatedAt',
+        'assignedTo.id',
+        'assignedTo.name',
+        'client.id',
+        'client.name',
+      ])
+      .getMany();
   }
 
   async findOne(id: string) {

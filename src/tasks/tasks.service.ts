@@ -55,6 +55,12 @@ export class TasksService {
       .getMany();
   }
 
+  async findAllByUser(userId: number) {
+    return await this._taskRepository.findBy({
+      assignedTo: { id: userId },
+    });
+  }
+
   async findOne(id: string) {
     const taskFound = await this._taskRepository.findOneBy({ id });
 

@@ -15,38 +15,38 @@ import { Task } from 'src/tasks/entities/task.entity';
 @Entity('clients')
 export class Client {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  phone: string;
+  phone!: string;
 
   @Column()
-  company: string;
+  company!: string;
 
   @Column({
     type: 'enum',
     enum: ClientStatus,
   })
-  status: ClientStatus;
+  status!: ClientStatus;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ManyToOne(() => User, (user) => user.clients)
-  owner: User;
+  owner!: User;
 
   @OneToMany(() => Note, (note) => note.client)
-  notes: Note[];
+  notes!: Note[];
 
   @OneToMany(() => Task, (task) => task.client)
-  tasks: Task[];
+  tasks!: Task[];
 }

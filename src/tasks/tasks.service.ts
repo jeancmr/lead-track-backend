@@ -32,7 +32,7 @@ export class TasksService {
     const { assignedTo, client, ...taskSaved } =
       await this._taskRepository.save(newTask);
 
-    return { message: 'Note saved succesfully', data: taskSaved };
+    return { message: 'Task saved succesfully', data: taskSaved };
   }
 
   async findAll() {
@@ -109,7 +109,7 @@ export class TasksService {
     const taskUpdated = await this.findOne(id);
 
     return {
-      message: `Task with id ${id} updated succesfully`,
+      message: `Task updated succesfully`,
       data: taskUpdated,
     };
   }

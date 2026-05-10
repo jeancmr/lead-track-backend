@@ -14,35 +14,35 @@ import { Task } from 'src/tasks/entities/task.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column()
-  password: string;
+  password!: string;
 
   @Column({
     type: 'enum',
     enum: UserRole,
   })
-  role: UserRole;
+  role!: UserRole;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @OneToMany(() => Client, (client) => client.owner)
-  clients: Client[];
+  clients!: Client[];
 
   @OneToMany(() => Note, (note) => note.createdBy)
-  notes: Note[];
+  notes!: Note[];
 
   @OneToMany(() => Task, (task) => task.assignedTo)
-  tasks: Task[];
+  tasks!: Task[];
 }

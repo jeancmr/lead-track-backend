@@ -100,6 +100,9 @@ export class ClientsService {
           id: ownerId,
         },
       },
+      relations: {
+        tasks: true,
+      },
     });
   }
 
@@ -109,7 +112,12 @@ export class ClientsService {
 
     const clientFound = await this._clientRepository.findOne({
       where: { id },
-      relations: { notes: true, tasks: true },
+      relations: {
+        notes: true,
+        tasks: {
+          assignedTo: true,
+        },
+      },
     });
 
     if (!clientFound) {

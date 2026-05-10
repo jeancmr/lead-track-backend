@@ -13,29 +13,29 @@ import { TaskStatus } from '../enum/task-status.enum';
 @Entity('tasks')
 export class Task {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  title: string;
+  title!: string;
 
   @Column()
-  dueDate: Date;
+  dueDate!: Date;
 
   @Column({
     type: 'enum',
     enum: TaskStatus,
   })
-  status: TaskStatus;
+  status!: TaskStatus;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ManyToOne(() => User, (user) => user.tasks)
-  assignedTo: User;
+  assignedTo!: User;
 
   @ManyToOne(() => Client, (client) => client.tasks)
-  client: Client;
+  client!: Client;
 }

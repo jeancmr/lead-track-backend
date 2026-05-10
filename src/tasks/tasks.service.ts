@@ -56,9 +56,19 @@ export class TasksService {
   }
 
   async findAllByUser(userId: number) {
-    return await this._taskRepository.findBy({
-      assignedTo: { id: userId },
+    const tasks = await this._taskRepository.find({
+      where: {
+        assignedTo: { id: userId },
+      },
+      relations: {
+        client: true,
+      },
     });
+
+    return tasks.map((task) => ({
+      ...task,
+      client: task.client.name,
+    }));
   }
 
   async findOne(id: string) {

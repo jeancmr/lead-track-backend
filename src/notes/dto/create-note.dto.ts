@@ -13,7 +13,7 @@ export class CreateNoteDto {
   @IsString()
   @MinLength(6)
   @IsNotEmpty()
-  content: string;
+  content!: string;
 
   @IsDate()
   @IsOptional()
@@ -25,9 +25,9 @@ export class CreateNoteDto {
 
   @IsInt()
   @IsNotEmpty()
-  userId: number;
+  userId!: number;
 
   @IsInt()
   @IsNotEmpty()
-  clientId: number;
+  clientId!: number;
 }

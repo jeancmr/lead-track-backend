@@ -78,7 +78,7 @@ export class NotesService {
     const noteUpdated = await this.findOne(id);
 
     return {
-      message: `Note with id ${id} updated succesfully`,
+      message: `Note updated succesfully`,
       data: noteUpdated,
     };
   }
